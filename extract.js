@@ -1,33 +1,19 @@
 "use strict"
 
-const OPEN = "css`"
-const CLOSE = "`"
+const STYLE_LITERAL = /(?<open>css`)(?<content>[^`]*)/g
 
-function* extract(source, opts) {
-  let searchStart = 0
+const toStyle = (match) => {
+  const { open, content } = match.groups
+  const startIndex = match.index + open.length
 
-  for (;;) {
-    let startIndex = source.indexOf(OPEN, searchStart)
-    if (startIndex === -1) {
-      break
-    }
-
-    startIndex += OPEN.length
-
-    let endIndex = source.indexOf(CLOSE, startIndex)
-    if (endIndex === -1) {
-      throw new Error(`${OPEN} with no closing ${CLOSE}`)
-    }
-
-    yield {
-      lang: "scss",
-      content: source.substring(startIndex, endIndex),
-      startIndex,
-    }
-
-    searchStart = endIndex + CLOSE.length
+  return {
+    lang: "scss",
+    content,
+    startIndex,
   }
 }
 
-module.exports = (source, opts) =>
-  [...extract(source, opts)]
+const extract = (source, opts) =>
+  Array.from(source.matchAll(STYLE_LITERAL), toStyle)
+
+module.exports = extract

@@ -1,0 +1,11 @@
+{
+  "name": "@lustre/postcss-styled-jsx-scss",
+  "version": "0.1.0",
+  "files": [
+    "index.js",
+    "extract.js"
+  ],
+  "peerDependencies": {
+    "postcss-syntax": "^0.36.2"
+  }
+}
